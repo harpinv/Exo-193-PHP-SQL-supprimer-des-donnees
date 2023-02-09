@@ -7,9 +7,9 @@
 class DB
 {
     private string $server = 'localhost';
-    private string $db = 'live';
     private string $user = 'root';
     private string $pwd = '';
+    private string $db = 'bdd_cours';
 
     private static PDO $dbInstance;
 

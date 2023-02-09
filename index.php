@@ -10,3 +10,69 @@
  *    --> Finalement, vous décidez de supprimer complètement la table
  *    --> Et pour finir, comme vous n'avez plus de table dans la base de données, vous décidez de supprimer aussi la base de données.
  */
+
+$server = 'localhost';
+$user = 'root';
+$pwd = '';
+$db = 'bdd_cours';
+
+function sanitize($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    $data = addslashes($data);
+    return $data;
+}
+
+try {
+
+    $maConnexion = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user, $pwd);
+    $maConnexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $user = "DELETE FROM user WHERE id = 2";
+
+    $result = $maConnexion->exec($user);
+    echo $result;
+
+    $user = "TRUNCATE TABLE user";
+
+    $result = $maConnexion->exec($user);
+    echo $result;
+
+    $nom = sanitize('Scotte');
+    $prenom = sanitize('Vimme');
+    $rue = sanitize('Rue du rubban');
+    $numero = sanitize('7');
+    $code_postal = sanitize('59610');
+    $ville = sanitize('Fourmies');
+    $pays = sanitize('France');
+    $mail = sanitize('s.vimme@gmail.com');
+
+
+    $user = $maConnexion->prepare("
+         INSERT INTO utilisateur (nom, prenom, rue, numero, code_postal, ville, pays, mail)
+         VALUES (:Scotte, :Vimme, :Rue du rubban, :7, :59610, :Fourmies, :France, :s.vimme@gmail.com)
+    ");
+
+    $user->bindParam(':Scotte', $nom);
+    $user->bindParam(':Vimme', $prenom);
+    $user->bindParam(':Rue du rubban', $rue);
+    $user->bindParam(':7', $numero);
+    $user->bindParam(':59610', $code_postal,PDO::PARAM_INT);
+    $user->bindParam(':Fourmies', $vlle);
+    $user->bindParam(':France', $pays);
+    $user->bindParam(':s.vimme@gmail.com', $mail);
+
+    $user = "DROP TABLE user";
+
+    $result = $maConnexion->exec($user);
+    echo $result;
+
+    $user = "DROP DATABASE $db";
+
+    $result = $maConnexion->exec($user);
+    echo $result;
+}
+catch (PDOException $exception) {
+    echo "Erreur de connexion: " . $exception->getMessage();
+}
